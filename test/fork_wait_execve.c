@@ -19,7 +19,6 @@ int execute(int *forked)
 	{
 		child_pid = fork();
 		int status;
-		pid_t child_ppid;
 
 		if (child_pid == -1)
 		{
