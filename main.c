@@ -30,8 +30,7 @@ int execute(char *cmd)
 {
 
 	pid_t child_pid;
-	//parameters
-	char *argv[] = {"", NULL};
+	
 	//Storing the command and adding the full path to bin will allow the user to 
 	//only type the command, without having to type the full path
 	//char command[100]; //TODO: 100 should be the maximum number of character we allow
@@ -47,7 +46,7 @@ int execute(char *cmd)
 	}
 	else if (child_pid == 0)
 	{
-		//strcat(bin, cmd);
+		char *argv[] = {"", NULL};
 		if (execve(cmd, argv, NULL) == -1)
 			perror("Error:");
 	}
@@ -65,20 +64,19 @@ int main(int argc, char const *argv[])
 {
 
 	char *buffer;
+	
 	if (argc == 2)
 	{
-		//If we have arguments, execute them without prompting the shell input
 		char buffer[strlen(argv[1])];
 		strcpy(buffer, argv[1]);
 		execute(buffer);
 		return (1);
 	}
 
-
 	const char separator[] = " ";
 	char *token;
 	size_t bufsize = 32;
-	//size_t line;
+	int notPipe = 0;
 
 	buffer = (char *)malloc(bufsize * sizeof(char));
 	if( buffer == NULL)
@@ -89,20 +87,20 @@ int main(int argc, char const *argv[])
 
 	do
 	{
-		printf("cisfun#: ");
-		//getline: get return value of getline to handle errors) return type: size_t
-		getline(&buffer,&bufsize,stdin);
-		token = strtok(buffer, separator);
-		/**Change the end of line character (\n) to a null character as execve expects
-		 * null termitated strings
-		*/
+		if (isatty(fileno(stdin)))
+		{
+			notPipe = 1;
+			printf("cisfun#: ");
+		}
+		
+		getline(&buffer, &bufsize, stdin);
 
+		token = strtok(buffer, separator);
+	
 		buffer[strlen(buffer) - 1] = '\0';
 		execute(token);
 
-		//printf("The command is: %s, %lu", token, strlen(token));
-
-	} while (isExit(buffer));
+	} while (notPipe != 0);
 
 	return(0);
 }
