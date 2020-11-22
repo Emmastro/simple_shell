@@ -3,7 +3,6 @@
 .B simple_shell
 - a simple UNIX command interpreter
 .SH SYNOPSIS
-.B #include \(dqholberton.h\(dq
 .sp
 .B int hsh(void)
 .SH DESCRIPTION
