@@ -5,12 +5,12 @@
  * @cmd: command to run
  * Return: 0 on success1 -1 if cmd is exit and 1 on any other error
  */
-int execute(char *cmd)
+int execute(char **cmd)
 {
 
 	pid_t child_pid;
 
-	if (strncmp("exit", cmd, 4) == 0)
+	if (strncmp("exit", cmd[0], 4) == 0)
 		return (-1);
 
 	child_pid = fork();
@@ -23,9 +23,7 @@ int execute(char *cmd)
 	}
 	else if (child_pid == 0)
 	{
-		char *argv[] = {"", NULL};
-
-		if (execve(cmd, argv, NULL) == -1)
+		if (execve(cmd[0], cmd, NULL) == -1)
 		{
 			perror("Error:");
 			exit(-1);
@@ -40,30 +38,6 @@ int execute(char *cmd)
 }
 
 
-char **tokenaization(char *str)
-{
-int i = 0;
-const char *s = " ";
-char *txt = "this is a text\n";
-int len_str = strlen(str);
-//char **tokens = (char **)malloc(sizeof(char *) * (len_str));
-char *token;
-
-printf("%i \n", len_str);
-
-/*if (!tokens)
-{
-fprintf(stderr, "sh: allocation error\n");
-exit(EXIT_FAILURE);
-}*/
-printf("tokens\n");
-token = strtok(txt, s);
-printf("Printing\n");
-
-return 0; //tokens;
-}
-
-
 /**
  * main - main simple shell
  * @argc: number of arguments
@@ -71,25 +45,26 @@ return 0; //tokens;
  * Return: Always 0, -1 on error.
  */
 
-int main(int argc, char const *argv[])
+int main(int argc, char **argv)
 {
 
-	char *buffer;
 	int response;
 
-	if (argc == 2)
+	if (argc >= 2)
 	{
-		char buffer[_strlen(argv[1])];
-
-		_strcpy(buffer, argv[1]);
-		execute(buffer);
-		return (1);
+		//TODO: Handle cases where there is no argument, only the command
+		if (execve(argv[1], argv, NULL) == -1)
+		{
+			perror("Error:");
+			exit(-1);
+		}
+		return(0);
 	}
 
-	const char separator[] = " ";
-	char *token;
+	char **tokens;
 	size_t bufsize = BUFSIZ; 
 	int isPipe = 0;
+	char *buffer;
 
 	buffer = (char *)malloc(bufsize * sizeof(char));
 	if (buffer == NULL)
@@ -107,8 +82,8 @@ int main(int argc, char const *argv[])
 
 		getline(&buffer, &bufsize, stdin);
 		buffer[_strlen(buffer) - 1] = '\0';
-		token = strtok(buffer, separator);
-		response = execute(token);
+		tokens = stringToTokens(buffer);
+		response = execute(tokens);
 	} while (isPipe && response != -1);
 
 	return (0);

@@ -12,5 +12,7 @@ int _strlen(const char *s);
 char *_strcpy(char *dest, const char *src);
 int _putchar(char c);
 void _puts(char *str);
+unsigned int nbr_spaces(char *s);
+char **stringToTokens(char *str);
 
 #endif
