@@ -8,6 +8,9 @@
 #include <sys/wait.h>
 #include <string.h>
 
-int _strlen(char *s);
+int _strlen(const char *s);
+char *_strcpy(char *dest, const char *src);
+int _putchar(char c);
+void _puts(char *str);
 
 #endif

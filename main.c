@@ -39,6 +39,31 @@ int execute(char *cmd)
 	return (0);
 }
 
+
+char **tokenaization(char *str)
+{
+int i = 0;
+const char *s = " ";
+char *txt = "this is a text\n";
+int len_str = strlen(str);
+//char **tokens = (char **)malloc(sizeof(char *) * (len_str));
+char *token;
+
+printf("%i \n", len_str);
+
+/*if (!tokens)
+{
+fprintf(stderr, "sh: allocation error\n");
+exit(EXIT_FAILURE);
+}*/
+printf("tokens\n");
+token = strtok(txt, s);
+printf("Printing\n");
+
+return 0; //tokens;
+}
+
+
 /**
  * main - main simple shell
  * @argc: number of arguments
@@ -54,17 +79,16 @@ int main(int argc, char const *argv[])
 
 	if (argc == 2)
 	{
-		char buffer[strlen(argv[1])];
+		char buffer[_strlen(argv[1])];
 
-		strcpy(buffer, argv[1]);
+		_strcpy(buffer, argv[1]);
 		execute(buffer);
 		return (1);
 	}
 
 	const char separator[] = " ";
 	char *token;
-	/*What should be the max bufsize?*/
-	size_t bufsize = 32;
+	size_t bufsize = BUFSIZ; 
 	int isPipe = 0;
 
 	buffer = (char *)malloc(bufsize * sizeof(char));
@@ -78,12 +102,12 @@ int main(int argc, char const *argv[])
 		if (isatty(fileno(stdin)))
 		{
 			isPipe = 1;
-			printf("cisfun#: ");
+			_puts("cisfun#: ");
 		}
 
 		getline(&buffer, &bufsize, stdin);
+		buffer[_strlen(buffer) - 1] = '\0';
 		token = strtok(buffer, separator);
-		buffer[strlen(buffer) - 1] = '\0';
 		response = execute(token);
 	} while (isPipe && response != -1);
 
