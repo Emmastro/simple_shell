@@ -52,17 +52,17 @@ int main(int argc, char **argv)
 
 	if (argc >= 2)
 	{
-		//TODO: Handle cases where there is no argument, only the command
+		/*TODO: Handle cases where there is no argument, only the command*/
 		if (execve(argv[1], argv, NULL) == -1)
 		{
 			perror("Error:");
 			exit(-1);
 		}
-		return(0);
+		return (0);
 	}
 
 	char **tokens;
-	size_t bufsize = BUFSIZ; 
+	size_t bufsize = BUFSIZ;
 	int isPipe = 0;
 	char *buffer;
 
